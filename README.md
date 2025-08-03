@@ -1,7 +1,8 @@
 # NASA Poster Converter for BOOX Note Max
-A simple script to resize some of the NASA images for either a Screen Saver or Notebook Cover. This was intended for my Note Max with a 13.3" screen.
 
-This script is designed to convert high-resolution, portrait-oriented images—like NASA's [Visions of the Future](https://www.jpl.nasa.gov/galleries/visions-of-the-future/) posters—into grayscale, BOOX-ready 3200×2400 JPEGs optimized for the Note Max's ePaper display.
+A robust script to resize NASA images for Screen Savers or Notebook Covers, optimized for the BOOX Note Max's 13.3" screen.
+
+This script converts high-resolution, portrait-oriented images—like NASA's [Visions of the Future](https://www.jpl.nasa.gov/galleries/visions-of-the-future/) posters—into BOOX-ready 3200×2400 JPEGs optimized for ePaper displays.
 
 **Original Poster**  
 ![Original TRAPPIST-1 Poster](example_images/trappist.jpg)
@@ -11,58 +12,87 @@ This script is designed to convert high-resolution, portrait-oriented images—l
 
 ## Why This Script?
 
-The original idea and conversion approach came from [this excellent Reddit post](https://www.reddit.com/r/Onyx_Boox/comments/w9zili/nasa_posters_adapted_for_eink/), which resized NASA posters to fit older BOOX devices. However, the original script:
-- Targeted a smaller screen resolution (1072×1448)
-- Used Windows batch syntax (I'm on Linux)
-- Didn’t directly support the 13.3" BOOX Note Max (Carta 1300, 300 ppi, 3200×2400)
+The original idea came from [this Reddit post](https://www.reddit.com/r/Onyx_Boox/comments/w9zili/nasa_posters_adapted_for_eink/), which resized NASA posters for older BOOX devices. This script improves upon that with:
 
-This script adapts that process for **Linux users** and **larger BOOX screens** while preserving the original intent: **no cropping, no distortion, and optimized grayscale conversion**.
+- **Linux compatibility** (vs Windows batch)
+- **13.3" BOOX Note Max support** (3200×2400 at 300 ppi)
+- **Flexible options** for color/grayscale and custom resolutions
+- **Better image processing** that preserves details
+- **Robust error handling** and user confirmation
 
 ## Features
 
-- Rotates images temporarily to better scale tall portraits
-- Resizes to fit 3200×2400 without cropping or adding bars
-- Applies grayscale (Rec709), contrast boosting, and dithering
-- Optional remapping using an eInk palette (`_eink_cmap.gif`)
-- Converts to high-quality JPEG ready for BOOX wallpaper or display use
-
-## Optional: Upscale First
-
-Some posters (especially older scans) may benefit from upscaling before conversion. If you use the script and you see bars along the top or bottom of your image, or the image is stretched then you can use [Upscayl](https://github.com/upscayl/upscayl) first and would just do a 2x or 3x with the Digital Art model.
+- **Smart grayscale conversion** with detail preservation and Floyd-Steinberg dithering
+- **No cropping or distortion** - images fit perfectly with padding
+- **Color mode option** for color e-readers
+- **Custom resolution support** for any e-ink device
+- **Dry-run mode** to preview settings before processing
+- **Batch processing** with progress feedback
+- **Quality control** with adjustable JPEG compression
 
 ## Usage
 
-1. Place your `.png` or `.jpg` poster(s) in the folder
-2. Make sure `_eink_cmap.gif` (if used) is in the same directory
-3. Run:
-
+### Basic Usage
 ```bash
 chmod +x convert_to_booxmax.sh
+./convert_to_booxmax.sh
 ```
 
-4. Run:
+### Options
+```bash
+./convert_to_booxmax.sh [OPTIONS] [WIDTH HEIGHT]
+
+OPTIONS:
+    --color, -c     Use color mode (default: grayscale)
+    --quality, -q   JPEG quality 1-100 (default: 75)
+    --dry-run       Show configuration without processing
+    --yes, -y       Skip confirmation prompt
+    --help, -h      Show help
+```
+
+### Examples
+
+**Default (grayscale for Note Max):**
 ```bash
 ./convert_to_booxmax.sh
 ```
 
-## Optional: Custom Screen Sizes
-You can also pass a custom resolution to adapt the script for other e-ink devices:
+**Color mode:**
 ```bash
-./convert_to_booxmax.sh [WIDTH] [HEIGHT]
+./convert_to_booxmax.sh --color
 ```
 
-## Examples:
-- Nova Air C (7.8"):
+**Custom resolution (Nova Air C 7.8"):**
 ```bash
 ./convert_to_booxmax.sh 1404 1872
 ```
-- Tab Ultra (10.3"):
+
+**Tab Ultra (10.3") with color:**
 ```bash
-./convert_to_booxmax.sh 1872 1404
-```
-- BOOX Note Max (portrait view):
-```bash
-./convert_to_booxmax.sh 2400 3200
+./convert_to_booxmax.sh --color 1872 1404
 ```
 
-The converted images will be named with the `_booxmax.jpg` suffix and saved in the same directory
+**Check settings before processing:**
+```bash
+./convert_to_booxmax.sh --dry-run --color 2400 3200
+```
+
+**Batch processing without prompts:**
+```bash
+./convert_to_booxmax.sh --yes --quality 85
+```
+
+## Supported Formats
+
+Input: `.jpg`, `.jpeg`, `.png` (including uppercase)  
+Output: High-quality JPEG with `_booxmax.jpg` suffix
+
+## Optional: Upscaling
+
+For older/low-resolution posters, consider upscaling first with [Upscayl](https://github.com/upscayl/upscayl) using 2x-3x Digital Art model if you notice bars or stretching.
+
+## Requirements
+
+- ImageMagick (`magick` command)
+- Bash shell
+- Image files in current directory
